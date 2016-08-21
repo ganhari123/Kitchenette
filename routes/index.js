@@ -20,11 +20,18 @@ router.use(passport.session()); // persistent login sessions
 router.use(flash());
 
 
-var con = mysql.createConnection({
+/*var con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "Hari0595",
   database: "kitchnette"
+});*/
+
+var con = mysql.createConnection({
+  host: "us-cdbr-iron-east-04.cleardb.net",
+  user: "b95c91e8abddcf",
+  password: "4f717c85",
+  database: "heroku_caed14fe08a9ca3"
 });
 
 require('../config/passport')(passport, con);
@@ -91,9 +98,6 @@ router.get('/logout', function(req, res){
 	req.logout();
 	res.redirect('/');
 });
-
-
-
 
 function isLoggedIn(req, res, next) {
 	if (req.user) {
