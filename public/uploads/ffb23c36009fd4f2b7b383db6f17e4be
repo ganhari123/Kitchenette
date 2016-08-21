@@ -1,0 +1,163 @@
+/**Ganapathy Hari Narayan
+   902986088
+**/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "cachesim.h"
+
+counter_t accesses = 0, hits = 0, misses = 0, writebacks = 0, write_misses = 0, read_misses = 0, reads = 0, writes = 0;
+//Block struct; represents each cache block
+typedef struct {
+  int valid;
+  int dirty;
+  int tag;
+  int LRUTime;
+} Block;
+
+//line struct, represents each line
+typedef struct {
+  Block* lineBlock;
+} Line;
+
+//Global variables used throughout
+Line* cache;
+int globTime;
+int bloc;
+int cacheSize;
+int assoc;
+
+/**
+* initializes the cache with the parameters as the specifications
+* malloc used
+**/
+void cachesim_init(int blocksize, int cachesize, int ways) {
+
+      int numOfLines = cachesize / (blocksize * ways);//Calculates number of lines
+      int i;
+      globTime = 0;//Global time initialized to 0 in the start
+      //Setting parameters to global variables
+      bloc = blocksize;
+      cacheSize = cachesize;
+      assoc = ways;
+      // Initialize all cache lines
+      cache = (Line*) malloc(numOfLines * sizeof(Line));
+      //Goes to each cache line initializes the set of blocks and then initializes all meta data within blocks
+      for (i = 0; i < numOfLines; i++) {
+        cache[i].lineBlock = (Block*) malloc(ways * sizeof(Block));
+        int j;
+        for (j = 0; j < ways; j++) {
+          cache[i].lineBlock[j].valid = 0;
+          cache[i].lineBlock[j].dirty = 0;
+          cache[i].lineBlock[j].tag = 0;
+          cache[i].lineBlock[j].LRUTime = 0;
+        }
+      }
+}
+
+//A helper function to calculate number of bits required to represent a certain number of bytes of data
+int calcBits(int num) {
+  int power = 0;
+  while (num != 1) {
+    num = num/2;
+    power++;
+  }
+  return power;
+}
+
+//Cache access function, reads and writes from cache
+void cachesim_access(addr_t physical_addr, int write) {
+
+  // Increment accesses, reads and write stats
+  accesses++;
+  if (write == 1) {
+    writes++;
+  } else {
+    reads++;
+  }
+
+  /** Calculates tag and index*/
+  int bitBlockSize = calcBits(bloc);
+  int bitIndexSize = calcBits(cacheSize/(bloc*assoc));
+  int tagB = physical_addr >> (bitIndexSize + bitBlockSize);
+  int index = physical_addr >>  bitBlockSize;
+  int notTag = (tagB) <<  bitIndexSize;
+  notTag = ~notTag;
+  index = index & notTag;
+  int i;
+  /** Checks to see whether cache at index contains value being referred to by physical address parameters
+  * If found, hits incremented, LRUTime updated to globTime and function is returned
+  **/
+  for (i = 0; i < assoc; i++) {
+    if (cache[index].lineBlock[i].valid == 1 && cache[index].lineBlock[i].tag == tagB) {
+        hits++;
+        if (write == 1) {
+          cache[index].lineBlock[i].dirty = 1;
+        }
+        cache[index].lineBlock[i].LRUTime = globTime;
+        globTime++;
+        return;
+    }
+  }
+
+/** If it comes out of first loop, then it is a miss, increment misses; Check to see if the blocks at cache index index
+* are free to put new missed memory address in; If no spot free, returns otherwise updates all meta data
+**/
+  misses++;
+  for (i = 0; i < assoc; i++) {
+    if (cache[index].lineBlock[i].valid == 0) {
+      cache[index].lineBlock[i].valid = 1;
+      if (write  == 1) {
+        cache[index].lineBlock[i].dirty = 1;
+	write_misses++;
+      } else {
+        cache[index].lineBlock[i].dirty = 0;
+	read_misses++;
+      }
+      cache[index].lineBlock[i].tag = tagB;
+      cache[index].lineBlock[i].LRUTime = globTime;
+      globTime++;
+      return;
+    }
+  }
+
+/** If the function gets passed the second part that means no free spot, muse evict a cache block within line to replace with new value
+* Checks the block with the lowest LRUTime are lowest time stamp and evicts that, hence te loop
+* Writebacks incremented here if dirty of block getting evicted is 1
+**/
+  int minT = cache[index].lineBlock[0].LRUTime;
+  int minInd = 0;
+  for (i = 0; i < assoc; i++) {
+    if (cache[index].lineBlock[i].LRUTime < minT) {
+      minInd = i;
+      minT = cache[index].lineBlock[i].LRUTime;
+    }
+  }
+
+  if (cache[index].lineBlock[minInd].dirty == 1) {
+    writebacks++;
+  }
+  cache[index].lineBlock[minInd].valid = 1;
+  if (write == 1) {
+    cache[index].lineBlock[minInd].dirty = 1;
+    write_misses++;
+  } else {
+    cache[index].lineBlock[minInd].dirty = 0;
+    read_misses++;
+  }
+  cache[index].lineBlock[minInd].tag = tagB;
+  cache[index].lineBlock[minInd].LRUTime = globTime;
+  globTime++;
+  // Note how this is divivded into 3 sections and how each section, the dirty bit is getting updated to 1 if write = 1
+}
+/** Prints all stats, free the malloced memory for safety purposes
+*/
+void cachesim_print_stats() {
+  printf("ACCESSES:%llu\n, HITS:%llu\n, MISSES:%llu, WRITEBACKS: %llu\n, WRITE_MISSES:%llu\n, READ_MISSES:%llu\n, READS:%llu\n, WRITES:%llu\n", accesses, hits, misses, writebacks, write_misses, read_misses, reads, writes);
+  int i;
+  for (i = 0; i < calcBits(cacheSize/(bloc*assoc)); i++) {
+    free(cache[i].lineBlock);
+  }
+  free(cache);
+}
