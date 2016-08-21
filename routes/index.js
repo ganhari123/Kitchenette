@@ -5,8 +5,23 @@ var session = require('express-session');
 var mysql = require("mysql");
 var passport = require('passport');
 var flash = require('connect-flash');
+var aws = require('aws-sdk');
 var multer  = require('multer');
-var upload = multer({ dest: 'public/uploads/' });
+//var upload = multer({ dest: 'public/uploads/' });
+var multerS3 = require('multer-s3');
+var s3 = new aws.S3({ /* ... */ });
+var upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'kitchenette',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString())
+    }
+  })
+});
 
 
 
