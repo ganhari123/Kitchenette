@@ -48,6 +48,10 @@ con.connect(function(err){
   console.log('Connection established');
 });
 
+setInterval(function () {
+    con.query('SELECT 1');
+}, 5000);
+
 router.get('/', function(req, res){
 	res.redirect('/login');
 });
