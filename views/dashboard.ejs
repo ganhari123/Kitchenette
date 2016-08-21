@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Page Title</title>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/dash.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="/javascripts/jquery-2.2.3.js"></script>
+	<script src="/javascripts/dash.js"></script>
+</head>
+<body>
+	<div class="menu">
+		<h class="Welcome">Kitchenette</h>
+		<a class="profile" href="/profile">Profile</a>
+		<a class="logout" href="/logout"> logout </a>
+	</div>
+		<div class="recipeSubmit">
+			<form id="recipe" method="POST" action="/submitRecipe" enctype="multipart/form-data">
+			    <input id="RecipeName" class="submitRecipeForm "type="text" name="first" value="Bob" /><br><br>
+			    <input class="submitRecipeForm" type="text" name="middle" value="James" /><br><br>
+			    <input class="submitRecipeForm" type="text" name="last" value="Smith" /><br><br>
+			    <input class="submitRecipeForm" name="image" type="file" /><br><br>
+			    <button id="submitBut" class="submitRecipeForm" class="sub" type="submit">Submit Recipe</button>
+			</form>
+		</div>
+</body>
+</html>

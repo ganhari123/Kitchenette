@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Page Title</title>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=0.75">
+	<script src="/javascripts/jquery-2.2.3.js"></script>
+	<script src="/javascripts/home.js"></script>
+</head>
+<body>
+	<!--div class="menu">
+		<h1 class="title">Kitchenette</h1>
+	</div-->
+	<h1 class="smallScreenTitle">Expand Screen to Login or Register</h1>
+	<div class="mainLogin" id="active">
+
+		<h1 class="title">Welcome to Kitchenette</h1>
+		<% if (isLogin == 0) { %>
+
+		<form id="login"  action="/login" method="POST" class="mainForm" style="display: none">
+			<p class="error" id="error"></p>
+			<h1 class="Title">Login</h1>
+			<input class="email" name="username" placeholder="Username" class="fname" type="text" size="30" required><br><br>
+			<input class="password" name="password" placeholder="Password" type="password" size="30" required><br><br> 
+			<button class="sub" type="submit">Sign in</button><br>
+			<p class="pretext">Don't have an account?<p class="reg">Register now</p></p> <br>
+		</form>
+
+		<form id="register" action="/register" method="POST" class="sideForm" >
+			<p class="error" id="error"><%= error %></p>
+			<h1 class="Title">Register</h1>
+			<input class="email" name="username" placeholder="Username" type="text" size="30" required><br><br>
+			<input class="email" name="conUsername" placeholder="confirm email" type="text" size="30" required><br><br>
+			<input class="password" name="password" placeholder="Password" type="password" size="30" required><br><br> 
+			<input class="password" name="conPassword" placeholder="confirm password" type="password" size="30" required><br><br> 
+			<button class="sub">Register</button><br>
+			<p class="pretext">Already have an Account?</p> <p1 class="reg">Login now</p>
+		</form>
+		<% } %>
+
+		<% if (isLogin == 1) { %>
+		<form id="login"  action="/login" method="POST" class="mainForm">
+			<p class="error" id="error"><%= error %></p>
+			<h1 class="Title">Login</h1>
+			<input class="email" name="username" placeholder="Username" class="fname" type="text" size="30" required><br><br>
+			<input class="password" name="password" placeholder="Password" type="password" size="30" required><br><br> 
+			<button class="sub" type="submit">Sign in</button><br>
+			<p class="pretext">Don't have an account?<p class="reg">Register now</p></p> <br>
+		</form>
+
+		<form id="register" action="/register" method="POST" class="sideForm" style="display: none">
+			<p class="error" id="error"></p>
+			<h1 class="Title">Register</h1>
+			<input class="email" name="username" placeholder="Username" type="text" size="30" required><br><br>
+			<input class="email" name="conUsername" placeholder="confirm email" type="text" size="30" required><br><br>
+			<input class="password" name="password" placeholder="Password" type="password" size="30" required><br><br> 
+			<input class="password" name="conPassword" placeholder="confirm password" type="password" size="30" required><br><br> 
+			<button class="sub">Register</button><br>
+			<p class="pretext">Already have an Account?</p> <p1 class="reg">Login now</p>
+		</form>
+		<% } %>
+	</div>
+
+	<br>
+</body>
+</html>

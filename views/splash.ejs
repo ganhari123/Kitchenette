@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pandango | Movie Ratings & Recommendations</title>
+    <link rel='stylesheet' href='/stylesheets/forms.css' />
+    <link rel='stylesheet' href='/stylesheets/tabs.css' />
+    <link rel='stylesheet' href='/stylesheets/splash.css' />
+  </head>
+  <body>
+	
+	<section id="login">
+		<div id="login_container">
+			<ul id="login_tabs" class="tabs">
+				<li class="tabs_active">Sign In</li>
+				<li>Register</li>
+			</ul>
+			<form id="sign_in_form" action="/login" method="POST">
+				
+				<p class="form-error" id="sign_in_error">Username/Password is incorrect.</p>
+				<p class="form-header">Please enter the following information to login to your account.</p>
+				
+				<input type="text" name="username" value="" placeholder="Username">
+				
+				<input type="password" name="password" value="" placeholder="Password">
+				
+				<button class="submit button-red" type="submit" onclick="process_sign_in()">Sign In</button>
+				<p class="form-link" id="forgot_password">Forgot username or password?</p>
+			</form>
+			<form id="register_form" action="/register" method="POST" style="display: none;">
+				
+				
+				<p class="form-error" id="register_error">Unable to register user.</p>
+				<p class="form-header">Please provide the following information to create an account.</p>
+
+				<p class="form-error" id="register_error_fname">Please enter a valid first name.</p>
+				<input type="text" name="first_name" value="" placeholder="First Name">
+
+				<p class="form-error" id="register_error_lname">Please enter a valid last name.</p>
+				<input type="text" name="last_name" value="" placeholder="Last Name">
+
+				<p class="form-error" id="register_error_uname">Please enter a valid username.</p>
+				<p class="form-error" id="register_error_uname_avl">Username has already been taken.</p>
+				<input type="text" name="username" value="" placeholder="Username (4 - 10)">
+
+				<p class="form-error" id="register_error_pass">Please enter a valid password.</p>
+				<input type="password" name="password" value="" placeholder="Password (6 - 16)">
+
+				<p class="form-error" id="register_error_pass_confirm">Password does not match.</p>
+				<input type="password" name="password_confirm" value="" placeholder="Confirm Password">
+
+				<button class="submit button-red" type="submit" onclick="process_register()">Register</span>
+
+			</form>
+		</div>
+	</section>
+	<script src="/javascript/api.js"></script>
+	<script src="/javascript/splash.js"></script>
+  </body>
+</html>
